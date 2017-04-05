@@ -7,6 +7,7 @@ export interface OAuthTokenConfig {
     name: string;
     urlTokenParameters?: {
         idToken: string;
+        accessToken: string;
         tokenType?: string;
     };
     expireOffsetSeconds?: number;
@@ -14,6 +15,7 @@ export interface OAuthTokenConfig {
 
 export interface OAuthTokenData {
     token: string;
+    accessToken: string;
     tokenType: string;
     expiresAt: number;
     jwtClaims?: JwtClaims;
@@ -31,6 +33,7 @@ export class OAuthTokenService {
             name: 'id_token',
             urlTokenParameters: {
                 idToken: 'id_token',
+                accessToken: 'access_token',
                 tokenType: 'token_type'
             },
             expireOffsetSeconds: 60
@@ -52,6 +55,7 @@ export class OAuthTokenService {
     public createToken = (urlTokenData: any): OAuthTokenData => {
         const token = urlTokenData[this.config.urlTokenParameters.idToken];
         const tokenType = urlTokenData[this.config.urlTokenParameters.tokenType] || 'Bearer';
+        const accessToken = urlTokenData[this.config.urlTokenParameters.accessToken];
 
         if (!token) {
             return null;
@@ -63,6 +67,7 @@ export class OAuthTokenService {
 
         return {
             token: token,
+            accessToken: accessToken,
             tokenType: tokenType,
             expiresAt: this.getTimeNow() + expirationTime,
             jwtClaims: claims
@@ -81,6 +86,10 @@ export class OAuthTokenService {
         return this.getToken() ? this.getToken().token : undefined;
     };
 
+    public getAccessToken= (): string => {
+        return this.getToken() ? this.getToken().accessToken : undefined;
+    };
+
     public getAuthorizationHeader = (): string => {
         if (!(this.getTokenType() && this.getIdToken())) {
             return '';
@@ -88,6 +97,10 @@ export class OAuthTokenService {
 
         const tokenType = this.getTokenType().charAt(0).toUpperCase() + this.getTokenType().substr(1);
 
+        if(this.getAccessToken())
+        {
+            return `${tokenType} ${this.getAccessToken()}`;
+        }        
         return `${tokenType} ${this.getIdToken()}`;
     };
 
