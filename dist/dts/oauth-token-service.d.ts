@@ -3,12 +3,14 @@ export interface OAuthTokenConfig {
     name: string;
     urlTokenParameters?: {
         idToken: string;
+        accessToken: string;
         tokenType?: string;
     };
     expireOffsetSeconds?: number;
 }
 export interface OAuthTokenData {
     token: string;
+    accessToken: string;
     tokenType: string;
     expiresAt: number;
     jwtClaims?: JwtClaims;
@@ -23,6 +25,7 @@ export declare class OAuthTokenService {
     setToken: (data: OAuthTokenData) => OAuthTokenData;
     getToken: () => OAuthTokenData;
     getIdToken: () => string;
+    getAccessToken: () => string;
     getAuthorizationHeader: () => string;
     getTokenType: () => string;
     getTokenExpirationTime: () => number;

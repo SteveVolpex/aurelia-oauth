@@ -86,7 +86,7 @@ export class OAuthTokenService {
         return this.getToken() ? this.getToken().token : undefined;
     };
 
-    public getAccessToken= (): string => {
+    public getAccessToken = (): string => {
         return this.getToken() ? this.getToken().accessToken : undefined;
     };
 
@@ -97,10 +97,9 @@ export class OAuthTokenService {
 
         const tokenType = this.getTokenType().charAt(0).toUpperCase() + this.getTokenType().substr(1);
 
-        if(this.getAccessToken())
-        {
+        if (this.getAccessToken()) {
             return `${tokenType} ${this.getAccessToken()}`;
-        }        
+        }
         return `${tokenType} ${this.getIdToken()}`;
     };
 
